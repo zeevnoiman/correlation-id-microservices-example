@@ -12,6 +12,7 @@ import {
   SQSClient,
 } from '@aws-sdk/client-sqs'
 import {SqsConsumer} from "./sqsConsumer.service";
+import {getCorrelationId} from "./asyncHooks";
 
 
 class SQSService {
@@ -47,6 +48,12 @@ class SQSService {
     const sendMessageCommandInput: SendMessageCommandInput  = {
       MessageBody: data,
       QueueUrl: queueUrl,
+      MessageAttributes: {
+        'CorrelationId': {
+          DataType: 'String',
+          StringValue: getCorrelationId()
+        }
+      }
     };
 
     if(isFifo) {
