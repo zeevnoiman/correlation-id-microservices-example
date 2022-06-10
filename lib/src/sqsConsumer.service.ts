@@ -223,7 +223,6 @@ export class SqsConsumer {
       'queueUrl',
       'handleMessage',
       'sqsClient',
-      'logger'
     ];
 
     requiredOptions.forEach((requiredOption: string) => {

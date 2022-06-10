@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors'
+import {purchaseRouter} from "./purchaseRouter";
 
 const app: express.Application = express();
 
@@ -10,7 +11,9 @@ app.get('/', (req, res) => {
   res.send('ok')
 })
 
-app.listen('4444', () => {
-  console.log('Purchase is listening on port 4444')
+app.use('/purchase', purchaseRouter)
+
+app.listen('4447', () => {
+  console.log('Purchase is listening on port 4447')
 })
 

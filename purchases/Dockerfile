@@ -3,5 +3,5 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --production
 COPY dist ./dist
-EXPOSE 4444
+EXPOSE 4447
 CMD npm start

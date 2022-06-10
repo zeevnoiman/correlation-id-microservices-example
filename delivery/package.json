@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc --build tsconfig.json",
-    "dev:server": "ts-node-dev --respawn --transpileOnly src/index.ts",
+    "dev:server": "ts-node-dev src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
