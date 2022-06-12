@@ -11,7 +11,7 @@ export const buyController = async (userToken: string, product: IProduct) => {
       token: userToken
     })
 
-    const sqsService = new SQSService()
+    const sqsService = new SQSService(logger)
     logger(user)
     await sqsService.produceToOneQueue('delivery.fifo', JSON.stringify({
       user: user,

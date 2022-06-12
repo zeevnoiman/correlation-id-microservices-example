@@ -10,8 +10,10 @@ import {
   DeleteMessageCommandInput,
   ReceiveMessageCommand,
   ReceiveMessageCommandInput,
-  ReceiveMessageCommandOutput
+  ReceiveMessageCommandOutput, MessageAttributeValue
 } from "@aws-sdk/client-sqs";
+import {logger} from "./logger";
+import {createCorrelationId} from "./asyncHooks";
 
 interface ITimeoutResponse {
   timeout: NodeJS.Timeout;
@@ -26,6 +28,7 @@ const enum consumerState {
 export interface IConsumerOptions {
   queueUrl: string;
   sqsClient: SQSClient;
+  logger: (message: any) => undefined,
   handleMessage: (message: string) => Promise<void>;
   attributeNames: string[];
   messageAttributeNames: string[];
@@ -49,6 +52,7 @@ export class SqsConsumer {
 
     this.options = {
       queueUrl: options.queueUrl as string,
+      logger: options.logger!,
       handleMessageTimeout: options.handleMessageTimeout,
       attributeNames: options.attributeNames || [],
       messageAttributeNames: options.messageAttributeNames || [],
@@ -134,8 +138,12 @@ export class SqsConsumer {
     let pending;
     try {
       if (!message.Body) {
-        return;
+        return
       }
+      const messageAttributes:  Record<string, MessageAttributeValue> | undefined = message.MessageAttributes;
+      const correlationId: string | undefined = messageAttributes?.['CorrelationId'].StringValue;
+      createCorrelationId(correlationId)
+
       if (this.options.handleMessageTimeout) {
         [timeout, pending] = this.createMessageProcessingTimeout(this.options.handleMessageTimeout);
         await Promise.race([
@@ -175,7 +183,7 @@ export class SqsConsumer {
       const receiveParams: ReceiveMessageCommandInput = {
         QueueUrl: this.options.queueUrl,
         AttributeNames: this.options.attributeNames,
-        MessageAttributeNames: this.options.messageAttributeNames,
+        MessageAttributeNames: [...this.options.messageAttributeNames, 'CorrelationId'],
         WaitTimeSeconds: this.options.waitTimeSeconds,
         VisibilityTimeout: this.options.visibilityTimeout
       };
@@ -223,6 +231,7 @@ export class SqsConsumer {
       'queueUrl',
       'handleMessage',
       'sqsClient',
+      'logger'
     ];
 
     requiredOptions.forEach((requiredOption: string) => {

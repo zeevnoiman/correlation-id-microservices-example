@@ -13,13 +13,14 @@ import {
 } from '@aws-sdk/client-sqs'
 import {SqsConsumer} from "./sqsConsumer.service";
 import {getCorrelationId} from "./asyncHooks";
+import {logger} from "./logger";
 
 
 class SQSService {
   private sqs: SQSClient;
   private consumersMappings: {[queueName: string]: SqsConsumer} = {};
 
-  constructor() {
+  constructor(private logger) {
     this.sqs = new SQSClient({
       region: 'local',
       credentials: {
@@ -74,7 +75,7 @@ class SQSService {
         throw new Error('Error occurred while getting or creating queue, queueUrl is undefined');
       }
 
-      this.consumersMappings[queueName] = new SqsConsumer({queueUrl, handleMessage: callback, sqsClient: this.sqs, terminateVisibilityTimeout: true});
+      this.consumersMappings[queueName] = new SqsConsumer({queueUrl, handleMessage: callback, sqsClient: this.sqs, terminateVisibilityTimeout: true, logger: this.logger});
       await this.consumersMappings[queueName].consume();
     } catch (e) {
         throw e
