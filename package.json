@@ -1,0 +1,21 @@
+{
+  "name": "async-hooks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build_delivery": "cd delivery && npm install && npm run build",
+    "build_authentication": "cd authentication && npm install && npm run build",
+    "build_purchases": "cd purchases && npm install && npm run build",
+    "run_dev_delivery": "cd delivery && npm install && npm run dev:server",
+    "run_dev_authentication": "cd authentication && npm install && npm run dev:server",
+    "run_dev_purchases": "cd purchases && npm install && npm run dev:server",
+    "build": "npm run build_purchases && npm run build_authentication && npm run build_delivery",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.7.3"
+  }
+}
