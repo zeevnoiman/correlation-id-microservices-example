@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors'
-import {startConsumingDeliveryQueue} from "./delivery.service";
+import {startConsumingDeliveryQueue, startIntervalOfProductsReturned} from "./delivery.service";
 import {apiRequested} from "../../lib/src/apiMiddlewares";
 
 const app: express.Application = express();
@@ -18,6 +18,9 @@ startConsumingDeliveryQueue()
   .catch(e => {
     console.log(e)
   })
+
+startIntervalOfProductsReturned()
+
 app.listen('4445', () => {
   console.log('Delivery is listening on port 4445')
 })

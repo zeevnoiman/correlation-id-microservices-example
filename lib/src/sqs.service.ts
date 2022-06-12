@@ -12,7 +12,7 @@ import {
   SQSClient,
 } from '@aws-sdk/client-sqs'
 import {SqsConsumer} from "./sqsConsumer.service";
-import {getCorrelationId} from "./asyncHooks";
+import {createCorrelationId, getCorrelationId} from "./asyncHooks";
 import {logger} from "./logger";
 
 
@@ -52,7 +52,7 @@ class SQSService {
       MessageAttributes: {
         'CorrelationId': {
           DataType: 'String',
-          StringValue: getCorrelationId()
+          StringValue: getCorrelationId() || createCorrelationId()
         }
       }
     };

@@ -18,12 +18,12 @@ function destroy(asyncId) {
 const asyncHook = asyncHooks.createHook({init, destroy})
 asyncHook.enable()
 
-export const createCorrelationId = (correlationIdInput?: string) => {
+export const createCorrelationId = (correlationIdInput?: string): string => {
   const correlationId: string = correlationIdInput || randomUUID()
   correlationIdsMap.set(asyncHooks.executionAsyncId(), correlationId)
   return correlationId
 }
 
-export const getCorrelationId = (): string => {
+export const getCorrelationId = (): string | undefined => {
   return correlationIdsMap.get(asyncHooks.executionAsyncId())
 }
